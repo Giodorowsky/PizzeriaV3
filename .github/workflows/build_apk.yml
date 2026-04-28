@@ -1,0 +1,29 @@
+name: Build Android APK
+on:
+  push:
+    branches: [ main ] # Se activa cada que subes cambios a 'main'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install Flet and Dependencies
+        run: |
+          pip install flet==0.84.0 aiosqlite
+          
+      - name: Build APK
+        run: |
+          flet build apk --project "Pizzeria Master" --org "com.giovanny.pizzeria"
+
+      - name: Upload APK Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: pizzeria-app-release
+          path: build/apk/*.apk
